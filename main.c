@@ -11,10 +11,10 @@
  * Created on 2 de agosto de 2016, 01:11 PM
  */
 
-#include <cstdlib>
+#include <stdio.h>
 #include "AnalizadorLexico.h"
 
-using namespace std;
+
 
 /*
  * 
