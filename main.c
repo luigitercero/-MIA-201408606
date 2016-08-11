@@ -5,17 +5,15 @@
  */
 
 /* 
- * File:   main.cpp
+ * File:   main.c
  * Author: luigitercero
  *
- * Created on 2 de agosto de 2016, 01:11 PM
+ * Created on 8 de agosto de 2016, 07:26 AM
  */
 
 #include <stdio.h>
-#include "AnalizadorLexico.h"
-
-
-
+#include <stdlib.h>
+#include "-MIA-201408606/AnalizadorLexico.h"
 /*
  * 
  */
@@ -24,10 +22,10 @@ int main(int argc, char** argv) {
    
     scanf("%[^\n\r]", comando);
     fflush(stdin);
-    //"mdisk -size::100 +unit::k -path::\"luis\" -name::"disco.dsk""
+    //"mdisk -size::100 +unit::k -path::"" -name::"disco.dsk""
     analizar(comando);
-    char entrada[500];
-    return 0;
-
+   
+   
+    return (EXIT_SUCCESS);
 }
 

@@ -14,31 +14,54 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 #ifndef ANALIZADORLEXICO_H
 #define ANALIZADORLEXICO_H
 char* split;
+char **unit;
+char **path;
+char **name;
+char **type;
+char **size;
+char **fit;
+char **delete_;
+char **add_;
+
+
 #ifdef __cplusplus
 
 
 extern "C" {
-    
 
-    
-int analizar(char comando [300]);
-void error(int numError);
-char* splitear(char cadena[300], char delimitador[2]);
-char * siguienteCaracter();
-int concatenarnum(char* nume);
-void S0_size();
-void S1_unit();
-void S2_path();
-void S3_name();
-    
-    
+
 #endif
 
+    int analizar(char comando [300]);
+    
+    //void analizar();
+    void error(int numError);
 
-
+    void S0_size();
+    void S1_unit();
+    void S2_path();
+    void S3_name();
+    void S4_path();
+    void analizarmDisk();
+    
+    void S5_Fdisksize();
+    void S6_FdiskUnit();
+    void S7_FdiskPaht();
+    void S8_FdiskType();
+    void S9_FdiskFit();
+    void S10_FdiskDelete();
+    void S11_FdiskName();
+    void S12_FdiskAdd();
+    
+    void S13_MountPath();
+    void S14_MountName();
+    
+    void S15_Uid();
+    
 
 #ifdef __cplusplus
 }
