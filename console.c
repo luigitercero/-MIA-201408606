@@ -28,7 +28,8 @@ char comando[500];
                 scanf(" %[^\n]s", comando);
                // fgets(comando);
                 //"mdisk -size::100 +unit::k -path::"discoDuro/" -name::"disco.dsk""
-                // mdisk -path::"/home /juan /mierda de mundo" -name::mb
+                
+                //fdisk -Size::30 -path::"discoDuro/disco.dsk" -name::"Particion1"
                 analizar(comando);
                 break;
             case 2:

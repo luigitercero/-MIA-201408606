@@ -18,11 +18,11 @@
 #ifndef ANALIZADORLEXICO_H
 #define ANALIZADORLEXICO_H
 char* split;
-char **unit;
+int unit;
 char **path;
 char **name;
-char **type;
-char **size;
+char type;
+int size;
 char **fit;
 char **delete_;
 char **add_;
@@ -56,6 +56,7 @@ extern "C" {
     void S10_FdiskDelete();
     void S11_FdiskName();
     void S12_FdiskAdd();
+    void analizarFdisk();
     
     void S13_MountPath();
     void S14_MountName();

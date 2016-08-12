@@ -23,8 +23,13 @@ extern "C" {
 
     void crearDisco(char* nombre, char* ruta, int tamanio, int unidad);
     
+    void crearParticion(int size, int unit, char* path, char*type, char* fit, char* delete_, char *name, char *add);
+    
     void borrarDisco(char* nombre, char* ruta);
     
+    mBR trabajarDisco(mBR mbr,int size, int unit, char* type, char *fit ,char *name);
+    
+    part trabajarParticion(part particion, int size, int unit, char* type, char *fit, char* name, int byteInicio);
 //    part agragarParticion(int part_size,char part_status, char part_type, char part_fit, char part_name);
     
     void montarDisco(char* ruta);
@@ -33,7 +38,9 @@ extern "C" {
     
     void elScript(char path[500]);
     
-    void leerDico(char path[300]);
+    mBR leerDico(char path[300]);
+    
+    void escribirArchivo(char* ruta, mBR mbr); 
 #ifdef __cplusplus
 }
 #endif

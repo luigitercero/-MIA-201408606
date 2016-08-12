@@ -32,15 +32,17 @@ int analizar(char comando[3000]) {
 
 
             } else {
-                size = "0";
-                unit = "1000";
+                size = 0;
+                unit = 1000;
                 path = "0";
-                type = "0";
+                type = 'p';
+                fit = "wf";
                 delete_ = "0";
                 name = "0";
                 add_ = "0";
-         
+
                 analizarFdisk();
+                crearParticion(size, unit, path, type, fit, delete_, name, add_);
 
             }
         } else {
@@ -142,8 +144,6 @@ void S0_Size() {
 
 void S1_unit() {
 
-
-
     if (strcasecmp(split, "+Unit")) {
         //no vine +unit
 
@@ -164,7 +164,7 @@ void S1_unit() {
 
             } else {
 
-                unit = 1024 * 2;
+                unit = 1024 * 1024;
 
                 analizarmDisk();
 
@@ -245,19 +245,23 @@ void S3_name() {
 }
 
 void S4_path() {
-    split = strtok(NULL, "::");
     if (strcasecmp(split, "-path")) {
-
         error(3);
-
     } else {
 
-        split = strtok(NULL, " ");
-        split++;
-        split++;
+
+
+        split = strtok(NULL, "\"");
+        split = strtok(NULL, "\"");
+
+        //split++;
+
         printf("S2 el path es (%s) \n", split);
         path = split;
-        //borrarDisco("", path);
+        //split = strtok(NULL, "\"");
+
+        printf("split++ (%s) \n", split);
+        analizarmDisk();
     }
 }
 
@@ -281,40 +285,43 @@ void analizarFdisk() {
 
                             if (strcasecmp(split, "+add")) {
 
-                            } else {
+                                if (strcasecmp(split, "+fit")) {
 
+                                } else {
+                                    S9_FdiskFit();
+                                }
+                            } else {
+                                S12_FdiskAdd();
                             }
 
                         } else {
-
+                            S10_FdiskDelete();
                         }
-                        
-                    } else {
 
+                    } else {
+                        S8_FdiskType();
                     }
 
                 } else {
-                    S2_path();
+                    S7_FdiskPaht();
                 }
 
-
             } else {
-                S3_name();
+                S11_FdiskName();
             }
-            
+
         } else {
-            S1_unit();
+            S6_FdiskUnit();
         }
-        
+
     } else {
-        S0_Size();
+        S5_Fdisksize();
     }
 
 }
 
-
 void S5_Fdisksize() {
-   
+
     if (strcasecmp(split, "-size")) {
 
         error(1);
@@ -331,8 +338,9 @@ void S5_Fdisksize() {
         if (num > 0) {
 
             printf("num s0 (%s) \n", split);
-            S6_FdiskUnit();
-
+            
+            size = num;
+            analizarFdisk();
         } else {
 
             error(2);
@@ -343,125 +351,152 @@ void S5_Fdisksize() {
 
 void S6_FdiskUnit() {
 
-    split = strtok(NULL, "::");
-    printf("siguiente token s1 (%s) \n", split);
-
     if (strcasecmp(split, "+Unit")) {
         //no vine +unit
 
-        S7_FdiskPaht();
+
+        analizarFdisk();
 
     } else {
+
         split = strtok(NULL, " ");
         split++;
+
         if (strcasecmp(split, "k")) {
+
 
 
             if (strcasecmp(split, "m")) {
 
                 if (strcasecmp(split, "b")) {
                     error(3);
+
                 } else {
-                    S7_FdiskPaht();
+
+                    unit = 1;
+
                 }
 
             } else {
-                S7_FdiskPaht();
+
+                unit = 1024 * 1024;
+
+                analizarFdisk();
+
             }
 
         } else {
-            S7_FdiskPaht();
+
+            unit = 1024;
+
+            analizarFdisk();
+
         }
     }
 
 }
 
 void S7_FdiskPaht() {
-    split = strtok(NULL, "::");
+
     if (strcasecmp(split, "-path")) {
+
         error(3);
+
     } else {
-        split = strtok(NULL, " ");
-        split++;
+
+        split = strtok(NULL, "\"");
+        split = strtok(NULL, "\"");
+
+        //split++;
 
         printf("S2 el path es (%s) \n", split);
+        path = split;
+        //split = strtok(NULL, "\"");
 
+        printf("split++ (%s) \n", split);
+        analizarFdisk();
     }
 }
 
 void S8_FdiskType() {
-    split = strtok(NULL, "::");
+
     printf("siguiente token s1 (%s) \n", split);
 
     if (strcasecmp(split, "+type")) {
         //no vine +unit  
-        S9_FdiskFit();
+        analizarFdisk();
 
     } else {
         split = strtok(NULL, " ");
         split++;
         if (strcasecmp(split, "e")) {
 
+            if (strcasecmp(split, "p")) {
 
-            if (strcasecmp(split, "l")) {
-                error(3);
+                if (strcasecmp(split, "l")) {
+                    error(3);
+                } else {
+                    type = 'l';
+                    analizarFdisk();
 
+                }
             } else {
-                S9_FdiskFit();
+                type = 'p';
+                analizarFdisk();
             }
 
         } else {
-            S9_FdiskFit();
+            type = 'e';
+            analizarFdisk();
         }
     }
 
 }
 
 void S9_FdiskFit() {
-    split = strtok(NULL, "::");
-    printf("siguiente token s1 (%s) \n", split);
 
     if (strcasecmp(split, "+fit")) {
         //no vine +unit
 
-        S10_FdiskDelete();
+        analizarFdisk();
 
     } else {
         split = strtok(NULL, " ");
         split++;
         if (strcasecmp(split, "Bf")) {
 
-
             if (strcasecmp(split, "FF")) {
 
                 if (strcasecmp(split, "wf")) {
                     error(3);
                 } else {
-                    S10_FdiskDelete();
+                    fit = "wf";
+                    analizarFdisk();
                 }
 
             } else {
-                S10_FdiskDelete();
+                fit = "ff";
+                analizarFdisk();
             }
 
         } else {
-            S10_FdiskDelete();
+            fit = "bf";
+            analizarFdisk();
         }
     }
 
 }
 
 void S10_FdiskDelete() {
-    split = strtok(NULL, "::");
-    printf("siguiente token s1 (%s) \n", split);
 
     if (strcasecmp(split, "+delete")) {
         //no vine +unit  
-        S9_FdiskFit();
+        analizarFdisk();
 
     } else {
         split = strtok(NULL, " ");
         split++;
+
         if (strcasecmp(split, "fast")) {
 
 
@@ -469,86 +504,63 @@ void S10_FdiskDelete() {
                 error(3);
 
             } else {
-                S11_FdiskName();
+                delete_ = "full";
+                analizarFdisk();
             }
 
         } else {
-            S11_FdiskName();
+            delete_ = "fast";
+            analizarFdisk();
         }
     }
 
 }
 
 void S11_FdiskName() {
-    split = strtok(NULL, "::");
-    printf("S3  -name: (%s) \n", split);
     if (strcasecmp(split, "-name")) {
-        error(4);
+        error(3);
     } else {
-        split = strtok(NULL, " ");
 
-        split++;
+       
+        
+        split = strtok(NULL, "\"");
+        split = strtok(NULL, "\"");
+printf("el name es: %s", split);
+        //split++;
 
-        printf("S3 name es (%s) \n", split);
-        S12_FdiskAdd();
+        name = split;
+        //split = strtok(NULL, "\"");
+
+        analizarFdisk();
     }
 
 }
 
 void S12_FdiskAdd() {
 
-    split = strtok(NULL, "::");
-    printf("siguiente token s1 (%s) \n", split);
-
-    if (strcasecmp(split, "+Unit")) {
-        //no vine +unit
-
-        S7_FdiskPaht();
-
+    if (strcasecmp(split, "+add")) {
+        error(1);
     } else {
-
-        split = strtok(NULL, "::");
-        if (strcasecmp(split, "+add")) {
-            error(1);
-        } else {
-
-            split = strtok(NULL, " ");
-            split++;
-
-            int num = 0;
-
-            num = (int) strtol(split, (char**) NULL, 10);
-
-            if (num > 0) {
-                printf("num s0 (%s) \n", split);
-                S1_unit();
-
-            } else {
-                error(2);
-            }
-        }
 
         split = strtok(NULL, " ");
         split++;
-        if (strcasecmp(split, "k")) {
 
+        int num = 0;
 
-            if (strcasecmp(split, "m")) {
+        num = (int) strtol(split, (char**) NULL, 10);
 
-                if (strcasecmp(split, "b")) {
-                    error(3);
-                } else {
-                    S7_FdiskPaht();
-                }
-
-            } else {
-                S7_FdiskPaht();
-            }
+        if (num > 0) {
+            printf("num s0 (%s) \n", split);
+            size = num;
+            add_ = "1";
+            analizarFdisk();
 
         } else {
-            S7_FdiskPaht();
+            error(2);
         }
     }
+
+
 }
 
 void S13_MountPath() {
@@ -594,5 +606,6 @@ void S15_idn() {
         S12_FdiskAdd();
     }
 }
+
 
 
