@@ -15,18 +15,18 @@ void crearDisco(char* nombre, char* ruta, int tamanio, int unidad) {
 
 
     if (strcasecmp(nombre, "") == 0) {
-        printf("no se ha definido el nombre");
+        printf("no se ha definido el nombre\n");
         return;
 
     } // primer token
 
     if (strcasecmp(ruta, "") == 0) {
-        printf("no existe ruta");
+        printf("no existe ruta\n");
         return;
     } // segundo token
 
     if (tamanio == NULL) {
-        printf("no existe tamanio");
+        printf("no existe tamanio\n");
         return;
     } // tercer token
 
@@ -39,13 +39,19 @@ void crearDisco(char* nombre, char* ruta, int tamanio, int unidad) {
     time(&mbr.mbr_fecha_creacion);
     mbr.mbre_disk_signature = rand();
 
-    mbr.mbrPart1.part_status = '0';
-    mbr.mbrPart2.part_status = '0';
-    mbr.mbrPart3.part_status = '0';
-    mbr.mbrPart4.part_status = '0';
+    mbr.mbrPart[0].part_status = '0';
+    mbr.mbrPart[0].part_start = sizeof (mbr);
+    mbr.mbrPart[1].part_status = '0';
+    mbr.mbrPart[2].part_status = '0';
+    mbr.mbrPart[3].part_status = '0';
 
-    printf("\nstaus: %c", mbr.mbrPart1.part_status);
-    printf("cannche gay");
+    mbr.mbrPart[0].part_start = sizeof (mbr);
+    mbr.mbrPart[1].part_start = -1;
+    mbr.mbrPart[2].part_start = -1;
+    mbr.mbrPart[3].part_start = -1;
+
+    printf("\nstaus: %c\n", mbr.mbrPart[0].part_status);
+
 
     strcat(ruta, nombre);
 
@@ -57,12 +63,12 @@ void crearParticion(int size, int unit, char* path, char* type, char* fit, char*
     mBR mbr;
 
     if (strcasecmp(path, "0") == 0) {
-        printf("no existe ruta");
+        printf("no existe ruta\n");
         return;
     } // segundo token
 
     if (strcasecmp(name, "0") == 0) {
-        printf("no existe el nombre");
+        printf("no existe el nombre\n");
         return;
     }
 
@@ -70,10 +76,10 @@ void crearParticion(int size, int unit, char* path, char* type, char* fit, char*
 
     printf("leer mbr %i \n", mbr.mbr_tamanio);
     printf("nombre mbre %i \n", mbr.mbre_disk_signature);
-    printf("1el mbr status  %c\n", mbr.mbrPart1.part_status);
-    printf("1el mbr status  %c\n", mbr.mbrPart2.part_status);
-    printf("1el mbr status  %c\n", mbr.mbrPart3.part_status);
-    printf("1el mbr status  %c\n", mbr.mbrPart4.part_status);
+    printf("1el mbr status  %c\n", mbr.mbrPart[0].part_status);
+    printf("1el mbr status  %c\n", mbr.mbrPart[1].part_status);
+    printf("1el mbr status  %c\n", mbr.mbrPart[2].part_status);
+    printf("1el mbr status  %c\n", mbr.mbrPart[3].part_status);
 
     if (strcasecmp(delete_, "0") == 0) {
 
@@ -88,11 +94,11 @@ void crearParticion(int size, int unit, char* path, char* type, char* fit, char*
 
     }
 
-    printf("el mbr status  %c\n", mbr.mbrPart1.part_status);
-    printf("el mbr status  %c\n", mbr.mbrPart2.part_status);
-    printf("el mbr status  %c\n", mbr.mbrPart3.part_status);
-    printf("el mbr status  %c\n", mbr.mbrPart4.part_status);
-    
+    printf("el mbr status  %c\n", mbr.mbrPart[0].part_status);
+    printf("el mbr status  %c\n", mbr.mbrPart[1].part_status);
+    printf("el mbr status  %c\n", mbr.mbrPart[2].part_status);
+    printf("el mbr status  %c\n", mbr.mbrPart[3].part_status);
+
     escribirArchivo(path, mbr);
 }
 
@@ -101,40 +107,38 @@ mBR trabajarDisco(mBR mbr, int size, int unit, char* type, char *fit, char* name
     if (mbr.mbr_tamanio > size * unit) {//hay una posibilidad de crear una particion
 
         if (existeNombre(mbr, name) == 0) { //se repite el nombre
-            if (mbr.mbrPart1.part_status == '0') {
 
-                mbr.mbrPart1 = trabajarParticion(mbr.mbrPart1, size, unit, type, fit, name, sizeof (mbr));
-                return mbr;
-            } else {
-                if (mbr.mbrPart2.part_status == '0') {
+            for (int n = 0; n < 4; n++) {
 
-                    mbr.mbrPart2 = trabajarParticion(mbr.mbrPart2, size, unit, type, fit, name, ingresarByteInicio(mbr.mbrPart1));
-                    return mbr;
-                } else {
-                    if (mbr.mbrPart3.part_status == '0') {
+                if (mbr.mbrPart[n].part_status == '0') {
+                    printf("este valor de particion se agregara %i\n", size * unit);
 
-                        mbr.mbrPart3 = trabajarParticion(mbr.mbrPart3, size, unit, type, fit, name, ingresarByteInicio(mbr.mbrPart2));
-                        return mbr;
-                    } else {
-                        if (mbr.mbrPart4.part_status == '0') {
+                    if (mbr.mbrPart[n].part_start == -1) {
 
-                            mbr.mbrPart4 = trabajarParticion(mbr.mbrPart4, size, unit, type, fit, name, ingresarByteInicio(mbr.mbrPart3));
-                            return mbr;
-                        } else {
-
-
-                        }
-
+                        mbr.mbrPart[n].part_start = ingresarByteInicio(mbr, n);
                     }
 
-                }
+                    if (getTamanioMaximo(mbr, n) > size * unit) {
+                        if (n == 0) {
+                            mbr.mbrPart[0] = trabajarParticion(mbr.mbrPart[0], size, unit, type, fit, name, sizeof (mbr));
+                        } else {
+                            mbr.mbrPart[n] = trabajarParticion(mbr.mbrPart[n], size, unit, type, fit, name, ingresarByteInicio(mbr, n));
+                        }
+                        return mbr;
 
+                    }
+                }
             }
+            printf("no es posible crear particion\n");
 
         }
 
+    } else {
+        printf("el tamnio del disco es muy pequenio para realizar operacion\n");
+
     }
 
+    return mbr;
 }
 
 part trabajarParticion(part particion, int size, int unit, char* type, char *fit, char* name, int byteInicio) {
@@ -142,38 +146,42 @@ part trabajarParticion(part particion, int size, int unit, char* type, char *fit
     strcpy(particion.part_fit, fit);
     strcpy(particion.part_name, name);
     particion.part_type = type;
-    particion.part_size = size;
+    particion.part_size = size*unit;
+    particion.part_start = byteInicio;
     return particion;
 }
 
 int existeNombre(mBR mbr, char *name) {
 
-    if (strcasecmp(name, mbr.mbrPart1.part_name)) {
+    for (int n; n < 4; n++) {
 
-        if (strcasecmp(name, mbr.mbrPart2.part_name)) {
-
-            if (strcasecmp(name, mbr.mbrPart3.part_name)) {
-
-                if (strcasecmp(name, mbr.mbrPart4.part_name)) {
-                    return 0;
-                }
-            }
+        if (strcasecmp(name, mbr.mbrPart[n].part_name) == 0) {
+            printf("nombre de la particion es existente\n");
+            return 1;
         }
     }
-    printf("el valor nombre existe");
-    return 1;
-
+    return 0;
 }
 
-int ingresarByteInicio(part particionAnterior) {
-
-    return particionAnterior.part_size + particionAnterior.part_size;
-
+int ingresarByteInicio(mBR mbr, int actual) {
+    return mbr.mbrPart[actual - 1].part_start + mbr.mbrPart[actual - 1].part_size;
 }
 
+int getTamanioMaximo(mBR mbr, int actual) {
+    int tamanio;
+    for (int n = actual + 1; n < 4; n++) {
+        if (mbr.mbrPart[n].part_status == '1') {
+            tamanio = -mbr.mbrPart[actual].part_start + mbr.mbrPart[n].part_start;
+            return tamanio;
+        }
+    }
+
+    tamanio = -mbr.mbrPart[actual].part_start + mbr.mbr_tamanio;
+    printf("este el el tamnio maximo que se puede agregar %i\n", tamanio);
+    return tamanio;
+}
 
 void borrarDisco(char* nombre, char* ruta) {
-
 
 }
 
@@ -192,27 +200,6 @@ part agragarParticion(int part_size, char *part_status, char *part_type, char *p
 
 }
 
-void montarDisco(char *ruta) {
-    //  path = ruta;
-
-    mBR mbr;
-    //File *file;
-    //file = fopen (path, "rb+");
-
-    /*
-        if (file == NULL){
-    
-            printf("No existe archivo");
-            return;
-        
-        }
-
-        fread (&mbr, sizeof(mbr), 1, file);
-     */
-
-
-}
-
 void desmontar() {
     // path = "";
 }
@@ -225,18 +212,19 @@ void elScript(char path[500]) {
 
     if (file == NULL) {
 
-        printf("no existe el script");
+        printf("no existe el script\n");
         return;
 
     }
     while (fgets(sentencia, sizeof (sentencia), file)) {
+        printf("\n\n\n");
         if (sentencia[0] == '#') {
 
-            printf("comentario");
+            printf("%s", sentencia);
 
         } else {
 
-            printf("script: %s", sentencia);
+            printf("%s\n\n\n  ", sentencia);
             analizar(sentencia);
 
         }
@@ -255,7 +243,7 @@ mBR leerDico(char path[300]) {
     }
 
     fread(&mbr, sizeof (mbr), 1, file);
-
+printf(" porawprasdfjadslkfjasdfasdfadsfasdfas%i ", mbr.mbr_tamanio);
     return mbr;
 
 
@@ -278,4 +266,37 @@ void escribirArchivo(char* ruta, mBR mbr) {
     rewind(file);
     fwrite(&mbr, sizeof (mbr), 1, file);
     fclose(file);
+}
+
+void montarDisco(char *name, char *patha) {
+    mBR mbr;
+    printf("%s , %s", name, patha);
+    montado[0].id = "vda1";
+    //strcpy(montado[0].id, "vda1");
+    montado[0].nombre = name;
+    // strcpy(montado[0].nombre, name);
+    montado[0].path = patha;
+    //strcpy(montado[0].path, patha);
+printf("pruba%s , %s\n",  montado[0].nombre, montado[0].path );
+
+}
+
+void crearGrafo(char* name, char* path, char* id) {
+    mBR mbr;
+    mbr = leerDico("discoDuro/disco.dsk");
+
+
+    mostraMbr(mbr);
+}
+
+int getNombrepart(mBR mbr, char *name) {
+
+    for (int n; n < 4; n++) {
+
+        if (strcasecmp(name, mbr.mbrPart[n].part_name) == 0) {
+            printf("nombre de la particion es existente\n");
+            return n;
+        }
+    }
+    return -1;
 }

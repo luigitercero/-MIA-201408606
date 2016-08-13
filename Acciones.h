@@ -20,6 +20,8 @@
 extern "C" {
 #endif
     
+    
+     dat montado[20];
 
     void crearDisco(char* nombre, char* ruta, int tamanio, int unidad);
     
@@ -32,7 +34,7 @@ extern "C" {
     part trabajarParticion(part particion, int size, int unit, char* type, char *fit, char* name, int byteInicio);
 //    part agragarParticion(int part_size,char part_status, char part_type, char part_fit, char part_name);
     
-    void montarDisco(char* ruta);
+   void montarDisco(char *name, char *path) ;
 
     void desmontar();
     
@@ -41,6 +43,12 @@ extern "C" {
     mBR leerDico(char path[300]);
     
     void escribirArchivo(char* ruta, mBR mbr); 
+    
+    int ingresarByteInicio(mBR mbr, int acrual);
+
+    int getTamanioMaximo(mBR mbr, int actual);
+    
+    void crearGrafo(char* name,char* path, char* id);
 #ifdef __cplusplus
 }
 #endif

@@ -33,10 +33,8 @@ typedef struct MBR{
     int mbr_tamanio;
     time_t *mbr_fecha_creacion;
     int mbre_disk_signature;
-     part mbrPart1;
-     part mbrPart2;
-     part mbrPart3;
-     part mbrPart4;
+     part mbrPart[4];
+     
 
 }mBR;
 
@@ -70,6 +68,16 @@ typedef struct SB{
 }sB;
 
 
+typedef struct Dat{
+    
+    char *path;
+    char *id;
+    char *nombre;
+     
+    
+}dat;
+
+void mostraMbr(mBR mbr);
 
 #ifdef __cplusplus
 }

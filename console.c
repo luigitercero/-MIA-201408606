@@ -15,8 +15,8 @@ void console() {
 
 }
 
-void menu(){
-char comando[500];
+void menu() {
+    char comando[500];
     int opcion;
     do {
         console();
@@ -26,24 +26,20 @@ char comando[500];
                 fflush(stdin);
                 printf("probar\n");
                 scanf(" %[^\n]s", comando);
-               // fgets(comando);
-                //"mdisk -size::100 +unit::k -path::"discoDuro/" -name::"disco.dsk""
-                
-                //fdisk -Size::30 -path::"discoDuro/disco.dsk" -name::"Particion1"
+
                 analizar(comando);
                 break;
             case 2:
-                
+
                 break;
 
         }
 
-    } while (opcion!=2);
-
+    } while (opcion != 2);
 
 }
 
-void prueba (char*caracter){
-    printf("hola %s",caracter);
+void prueba(char*caracter) {
+    printf("hola %s", caracter);
     //analizar();
 }

@@ -20,20 +20,37 @@ int analizar(char comando[3000]) {
                 if (strcasecmp(split, "mount")) {
 
                     if (strcasecmp(split, "umount")) {
-                        error(0);
+
+                        if (strcasecmp(split, "exect")) {
+
+                            if (strcasecmp(split, "rep")) {
+                                error(0);
+                            } else {
+                                analizarRep();
+                                crearGrafo(name, path, id_);
+
+                            }
+
+                        } else {
+                            path = "0";
+                            S16_Exect();
+                            elScript(path);
+                        }
+
 
                     } else {
-                        printf("umount");
+                        printf("umount\n");
 
                     }
                 } else {
-                    S13_MountPath();
+                    analizarMount();
+                    montarDisco(name, path);
                 }
 
 
             } else {
                 size = 0;
-                unit = 1000;
+                unit = 1024;
                 path = "0";
                 type = 'p';
                 fit = "wf";
@@ -55,6 +72,122 @@ int analizar(char comando[3000]) {
     }
 
 }
+
+void analizarRep() {
+
+    split = strtok(NULL, " ::");
+    printf("(%s)\n", split);
+
+    if (split == NULL)
+        return;
+    if (strcasecmp(split, "-name")) {// primer token
+
+        if (strcasecmp(split, "-path")) {// segundo token
+
+            if (strcasecmp(split, "-id")) {// tercer token
+
+                if (strcasecmp(split, "+ruta")) {
+
+
+                } else {
+                    S20_Ruta();
+                }
+
+            } else {
+                S19_id();
+            }
+        } else {
+            S18_RepPath();
+        }
+    } else {
+        S17_RepName();
+    }
+
+}
+
+void S17_RepName() {
+
+
+    split = strtok(NULL, " ");
+    split++;
+
+    if (strcasecmp(split, "mbr")) {
+
+        if (strcasecmp(split, "disk")) {
+
+
+        } else {
+
+            name = "disk";
+        }
+
+    } else {
+
+        name = "disk";
+
+    }
+
+
+    analizarRep();
+}
+
+void S18_RepPath() {
+
+
+    split = strtok(NULL, "\"");
+    printf("S2 el path es (%s) \n", split);
+    split = strtok(NULL, "\"");
+
+    //split++;
+
+    printf("S2 el path es (%s) \n", split);
+    path = split;
+    crearDirectorio(path);
+    //split = strtok(NULL, "\"");
+
+    printf("split++ (%s) \n", split);
+    analizarRep();
+}
+
+void S19_id() {
+
+    split = strtok(NULL, " ");
+
+    split++;
+
+    printf("S3 name es (%s) \n", split);
+
+    id_ = split;
+
+    analizarRep();
+}
+
+void S20_Ruta() {
+    analizarRep();
+}
+
+void analizarMount() {
+    split = strtok(NULL, " ::");
+    printf("(%s)\n", split);
+
+    if (split == NULL)
+        return;
+
+
+    if (strcasecmp(split, "-name")) {// tercer token
+
+        if (strcasecmp(split, "-path")) {
+
+
+        } else {
+            S13_MountPath();
+        }
+
+    } else {
+        S14_MountName();
+    }
+}
+
 
 void error(int numError) {
 
@@ -87,7 +220,7 @@ void error(int numError) {
 void analizarmDisk() {
 
     split = strtok(NULL, " ::");
-    printf("(%s)", split);
+    printf("(%s)\n", split);
 
     if (split == NULL)
         return;
@@ -233,8 +366,8 @@ void S3_name() {
 
         } else {
 
-            printf("termino de analizar cadena 1");
-            printf("(%i, %i, %s,%s)", size, unit, path, name);
+            printf("termino de analizar cadena 1\n");
+            printf("(%i, %i, %s,%s)\n", size, unit, path, name);
             analizarmDisk();
 
 
@@ -252,12 +385,14 @@ void S4_path() {
 
 
         split = strtok(NULL, "\"");
+        printf("S2 el path es (%s) \n", split);
         split = strtok(NULL, "\"");
 
         //split++;
 
         printf("S2 el path es (%s) \n", split);
         path = split;
+        crearDirectorio(path);
         //split = strtok(NULL, "\"");
 
         printf("split++ (%s) \n", split);
@@ -338,7 +473,7 @@ void S5_Fdisksize() {
         if (num > 0) {
 
             printf("num s0 (%s) \n", split);
-            
+
             size = num;
             analizarFdisk();
         } else {
@@ -411,6 +546,7 @@ void S7_FdiskPaht() {
 
         printf("S2 el path es (%s) \n", split);
         path = split;
+        crearDirectorio(path);
         //split = strtok(NULL, "\"");
 
         printf("split++ (%s) \n", split);
@@ -521,11 +657,11 @@ void S11_FdiskName() {
         error(3);
     } else {
 
-       
-        
+
+
         split = strtok(NULL, "\"");
         split = strtok(NULL, "\"");
-printf("el name es: %s", split);
+        printf("el name es: %s", split);
         //split++;
 
         name = split;
@@ -564,31 +700,34 @@ void S12_FdiskAdd() {
 }
 
 void S13_MountPath() {
-    split = strtok(NULL, "::");
-    if (strcasecmp(split, "-path")) {
-        error(3);
-    } else {
-        split = strtok(NULL, " ");
-        split++;
 
-        printf("S2 el path es (%s) \n", split);
+    split = strtok(NULL, "\"");
+    split = strtok(NULL, "\"");
 
-    }
+    //split++;
+
+   
+    
+    crearDirectorio(path);
+    //split = strtok(NULL, "\"");
+
+    printf("split++ (%s) \n", split);
+   path = split;
+    analizarMount();
+
 }
 
 void S14_MountName() {
-    split = strtok(NULL, "::");
-    printf("S3  -name: (%s) \n", split);
-    if (strcasecmp(split, "-name")) {
-        error(4);
-    } else {
-        split = strtok(NULL, " ");
 
-        split++;
 
-        printf("S3 name es (%s) \n", split);
-        S12_FdiskAdd();
-    }
+    split = strtok(NULL, "\"");
+    split = strtok(NULL, "\"");
+    printf("el name es: %s", split);
+    //split++;
+
+    name = split;
+    //split = strtok(NULL, "\"");
+    analizarMount();
 
 }
 
@@ -607,5 +746,30 @@ void S15_idn() {
     }
 }
 
+void S16_Exect() {
+
+    split = strtok(NULL, "\"");
+
+    //split++;
 
 
+    path = split;
+    //split = strtok(NULL, "\"");
+
+    printf("split++ (%s) \n", split);
+
+
+
+}
+
+void crearDirectorio(char pathcarpeta[200]) {
+
+    char comando[500] = "mkdir -p ";
+    strcat(comando, "\"");
+    strcat(comando, pathcarpeta);
+    strcat(comando, "\"");
+    system(comando);
+    printf("Se creo el directorio: %s\n", pathcarpeta);
+
+
+}

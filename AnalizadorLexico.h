@@ -26,6 +26,7 @@ int size;
 char **fit;
 char **delete_;
 char **add_;
+char **id_;
 
 
 #ifdef __cplusplus
@@ -37,7 +38,7 @@ extern "C" {
 #endif
 
     int analizar(char comando [300]);
-    
+
     //void analizar();
     void error(int numError);
 
@@ -47,7 +48,7 @@ extern "C" {
     void S3_name();
     void S4_path();
     void analizarmDisk();
-    
+
     void S5_Fdisksize();
     void S6_FdiskUnit();
     void S7_FdiskPaht();
@@ -57,12 +58,21 @@ extern "C" {
     void S11_FdiskName();
     void S12_FdiskAdd();
     void analizarFdisk();
-    
+
+    void analizarMount();
     void S13_MountPath();
     void S14_MountName();
-    
+
     void S15_Uid();
+
+    void S16_Exect();
     
+    void analizarRep();
+    void S17_RepName();
+    void S18_RepPath();
+    void S19_id();
+    void S20_Ruta();
+
 
 #ifdef __cplusplus
 }
